@@ -1,4 +1,4 @@
-use crate::handlers::{course::*, general::health_check_handler, teacher::*};
+use crate::handlers::{course::*, general::*, teacher::*};
 use actix_web::web;
 
 pub fn general_routes(cfg: &mut web::ServiceConfig) {
@@ -30,5 +30,5 @@ pub fn teacher_routes(cfg: &mut web::ServiceConfig) {
             .route("/{teacher_id}", web::get().to(get_teacher_details))
             .route("/{teacher_id}", web::put().to(update_teacher_details))
             .route("/{teacher_id}", web::delete().to(delete_teacher)),
-    )
+    );
 }

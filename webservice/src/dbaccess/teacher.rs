@@ -1,18 +1,11 @@
-use std::fmt::Result;
-
 use crate::errors::MyError;
 use crate::models::teacher::*;
 use sqlx::postgres::PgPool;
-use sqlx::Executor;
 
 pub async fn get_all_teachers_db(pool: &PgPool) -> Result<Vec<Teacher>, MyError> {
-    let rows = sqlx::query!(
-        r#"
-        SELECT id, name, picture_url, profile FROM teacher
-    "#
-    )
-    .fetch_all(pool)
-    .await?;
+    let rows = sqlx::query!(r#"SELECT id, name, picture_url, profile FROM teacher"#)
+        .fetch_all(pool)
+        .await?;
 
     let teachers: Vec<Teacher> = rows
         .iter()
@@ -31,9 +24,7 @@ pub async fn get_all_teachers_db(pool: &PgPool) -> Result<Vec<Teacher>, MyError>
 
 pub async fn get_teacher_details_db(pool: &PgPool, teacher_id: i32) -> Result<Teacher, MyError> {
     let row = sqlx::query!(
-        r#"
-        SELECT id, name, picture_url, profile FROM teacher WHERE id = $1
-        "#
+        r#"SELECT id, name, picture_url, profile FROM teacher WHERE id = $1"#,
         teacher_id
     )
     .fetch_one(pool)
@@ -73,11 +64,13 @@ pub async fn post_new_teacher_db(
     })
 }
 
-pub async fn update_teacher_details_db(pool: &PgPool, teacher_id: i32, update_teacher) -> Result<Teacher, MyError> {
+pub async fn update_teacher_details_db(
+    pool: &PgPool,
+    teacher_id: i32,
+    update_teacher: UpdateTeacher,
+) -> Result<Teacher, MyError> {
     let row = sqlx::query!(
-        r#"
-        SELECT id, name, picture_url, profile FROM teacher WHERE id = $1
-        "#
+        r#"SELECT id, name, picture_url, profile FROM teacher WHERE id = $1"#,
         teacher_id
     )
     .fetch_one(pool)
@@ -105,9 +98,15 @@ pub async fn update_teacher_details_db(pool: &PgPool, teacher_id: i32, update_te
 
     let updated_row = sqlx::query!(
         r#"
-        UPDATE teacher_SET name = $1, picture_url = $2, profile = $3
-        WHERE id = $4
-        RETURNING id, name, picture_url, profile
+        UPDATE teacher SET 
+            name = $1, 
+            picture_url = $2, 
+            profile = $3 
+        WHERE id = $4 
+        RETURNING id, 
+            name, 
+            picture_url, 
+            profile
         "#,
         temp.name,
         temp.picture_url,
@@ -120,7 +119,7 @@ pub async fn update_teacher_details_db(pool: &PgPool, teacher_id: i32, update_te
         id: r.id,
         name: r.name,
         picture_url: r.picture_url,
-        profile: r.profile
+        profile: r.profile,
     })
     .map_err(|_err| MyError::NotFound("Teacher id not found".into()))?;
 
