@@ -11,5 +11,5 @@
 3.根目录运行:
 
 ```bash
-$ cargo run -p webservice  --bin teacher-service
+$ make run
 ```
