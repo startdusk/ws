@@ -18,6 +18,10 @@
 $ make run
 ```
 
+## webapp
+
+后端渲染，没啥可说的，上面的 `make run` 一并和 `webservice` 运行了
+
 ## wasm-client
 
 注意：这里用 Webassembly 开发绕了一个大圈, 主要是为了学习 Webassembly 在 Web 中的使用, 并不是所有的 Rust crate 都能在 Webassembly 里使用, 只有一小部分能使用
