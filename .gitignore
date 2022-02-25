@@ -11,3 +11,10 @@ Cargo.lock
 /target
 
 .env
+
+node_modules
+dist
+
+bin/
+pkg/
+wasm-pack.log
