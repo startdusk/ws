@@ -1,4 +1,5 @@
-use actix_web::{web, App, HttpServer};
+use actix_cors::Cors;
+use actix_web::{http, web, App, HttpServer};
 use dotenv::dotenv;
 use sqlx::postgres::PgPoolOptions;
 use std::env;
@@ -35,6 +36,16 @@ async fn main() -> io::Result<()> {
     });
 
     let app = move || {
+        let cors = Cors::default()
+            .allowed_origin("http://localhost:18080/")
+            .allowed_origin_fn(|origin, _req_head| {
+                origin.as_bytes().starts_with(b"http://localhost")
+            })
+            .allowed_methods(vec!["GET", "POST"])
+            .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+            .allowed_header(http::header::CONTENT_TYPE)
+            .max_age(3600);
+
         App::new()
             .app_data(shared_data.clone())
             .app_data(web::JsonConfig::default().error_handler(|_err, _req| {
@@ -42,6 +53,7 @@ async fn main() -> io::Result<()> {
             }))
             .configure(general_routes)
             .configure(course_routes)
+            .wrap(cors)
             .configure(teacher_routes)
     };
 
