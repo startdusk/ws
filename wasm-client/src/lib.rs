@@ -1,6 +1,11 @@
 mod utils;
 
 use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
+use wasm_bindgen_futures::spawn_local;
+use web_sys::HtmlButtonElement;
+
+use models::course::*;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -11,6 +16,8 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 #[wasm_bindgen]
 extern "C" {
     fn alert(s: &str);
+
+    fn confirm(s: &str) -> bool;
 
     #[wasm_bindgen(js_namespace = console)]
     fn log(s: &str);
@@ -58,7 +65,27 @@ pub async fn main() -> Result<(), JsValue> {
         tr.append_child(&td)?;
 
         let td = document.create_element("td")?;
-        let btn = document.create_element("button")?;
+        let btn: HtmlButtonElement = document
+            .create_element("button")
+            .unwrap()
+            .dyn_into::<HtmlButtonElement>()
+            .unwrap();
+
+        let cid = c.id;
+        let click_closure = Closure::wrap(Box::new(move |_event: web_sys::MouseEvent| {
+            let r = confirm(format!("确认删除 ID 为{} 的课程?", cid).as_str());
+            match r {
+                true => {
+                    spawn_local(delete_course(1, cid));
+                    alert("删除成功!");
+
+                    web_sys::window().unwrap().location().reload().unwrap();
+                }
+                _ => {}
+            }
+        }) as Box<dyn Fn(_)>);
+        btn.add_event_listener_with_callback("click", click_closure.as_ref().unchecked_ref())?;
+        click_closure.forget(); // 走出作用域后，闭包仍然有效
         btn.set_attribute("type", "button")?;
         btn.set_attribute("class", "btn btn-danger btn-sm")?;
         btn.set_text_content(Some("Delete"));

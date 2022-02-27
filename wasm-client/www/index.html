@@ -16,13 +16,15 @@
       javascript in your browser.</noscript
     >
     <div class="m-3" style="height: 600px">
+      <header
+        class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom"
+      >
+        <h1>wasm-client</h1>
+      </header>
       <div class="row">
         <div class="col">
           <div class="card border-info mb-3">
             <div class="card-header">Courses</div>
-            <div class="card-body">
-              <button type="button" class="btn btn-primary">添加</button>
-            </div>
             <table class="table table-hover table-bordered table-sm">
               <thead>
                 <tr>
@@ -35,7 +37,39 @@
               </thead>
               <tbody id="left-tbody"></tbody>
             </table>
-            <div id="left"></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card border-info mb-3">
+            <div class="card-header">Add Courses</div>
+            <div class="card-body">
+              <form id="form" class="row g-3 needs-validation">
+                <div class="mb-3">
+                  <label for="name" class="form-label">Course Name</label>
+                  <input
+                    type="name"
+                    class="form-control"
+                    id="name"
+                    required
+                    placeholder="Course Name"
+                  />
+                  <div class="invalid-feedback">Please input Course Name!</div>
+                </div>
+                <div class="mb-3">
+                  <label for="description" class="form-label"
+                    >Course Description</label
+                  >
+                  <textarea
+                    rows="3"
+                    id="description"
+                    class="form-control"
+                  ></textarea>
+                </div>
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary">提交</button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>

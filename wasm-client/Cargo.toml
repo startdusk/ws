@@ -29,7 +29,10 @@ web-sys = {version = "0.3.56", features = [
     "Element",
     "HtmlElement",
     "Node",
-    "console"
+    "console",
+    "HtmlButtonElement",
+    "MouseEvent",
+    "Location",
 ]} # 能够使用浏览器的标准接口
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
